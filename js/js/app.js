@@ -1,36 +1,31 @@
-
-var store = new Vue({
-  el: '#store',
-  data: {
-    orderSum: 0,
-    products: [
-      {
-        id: 1,
-        name: 'BMW',
-        price: 3000,
-        anul: '1995',
-        telefon:'+373 7020739',
-          nume:'Andrei'
-      },
-      {
-        id: 2,
-        name: 'Lada',
-        price: 3000,
-        anul: '1995',
-        telefon:'+373 7020739',
-          nume:'Andrei'
-      }
-    ]
-  },
-  methods: {
-    addToCart(product){
-      this.orderSum = parseFloat(this.orderSum + product.price);    
-      this.products[product.id - 1].quantity++;
+const car=(id,name,model,an,phone,image,pret,prnume,probeg,detail) =>({id,name,model,an,phone,image,pret,prnume,probeg,detail})
+const cars=[
+ car('1','BMW','x5','2006','+373 79 20 30 20','img/1.png',6000,'Andrei','3000','asvgdgasdguaghsdashdhjadjhbdsas'),
+     car('2','Lada','7','2006','+373 79 20 30 20','img/2.png',6000,'Andrei','3000','asvgdgasdguaghsdashdhjadjhbdsas'), 
+]
+new Vue({
+    el:'#app',
+    data:{
+        cars:cars,
+        car:cars[0],
+        selectedCarIndex:0,
+        phoneVisibility:false,
+        seartch:''
     },
-    removeFromcart(product){
-      var sumToRemove = this.products[product.id - 1].quantity * this.products[product.id - 1].price;
-      this.orderSum -= sumToRemove;
-      this.products[product.id - 1].quantity = 0;
-    }
-  }
+    methods:{
+        selectCar: function(index){
+            console.log('click',index)
+            this.car = cars[index]
+            this.selectedCarIndex = index
+        }
+    },
+    computed:{
+       phoneBtnText(){
+           return this.phoneVisibility ? 'Ascunde telefonula' :'Arata telefonul'
+       },
+    filteredCars(){
+          return this.cars.filter(car => {
+            return car.name.indexOf(this.seartch) > -1 || car.model.indexOf(this.seartch) > -1
+        })  
+    }}
 })
