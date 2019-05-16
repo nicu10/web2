@@ -11,7 +11,7 @@
     <div class="container pt-5" id="app">
         <div class="row mb-3">
             <div class="col">
-                <h1>Car</h1>
+                <h1>Machine shop</h1>
                 <div class="row">
                     <div class="col-md-4">
         <div class="for-group">
@@ -19,16 +19,20 @@
             <input type="text" class="form-control" 
             id="seartch"
              placeholder="name, model ...." 
-             v-model="seartch">
+             v-model="seartch"
+           >
         </div>
                    <hr>
+                   <div class="overflow-auto">
                    <ul class="list-group">
                        <li v-for="(car,index) of filteredCars"
                        class="list-group-item list-group-item-action pointer" 
                        v-on:click="selectCar(index)" 
+                        @click="remove()"
                        :class="{'active': selectedCarIndex === index}">
                        {{car.name}} - {{car.model}}</li>
                    </ul>
+                   </div>
                     </div>
                     <div class="col-md-5 pt-4">
                        <div class="card">
@@ -41,8 +45,8 @@
                          <ul>
                             <li>Model- {{car.model}}</li>
                               <li>Anul- {{car.an}}</li>
-                              <li>Pretul- {{car.pret}}</li>
-                              <li>Probeg- {{car.probeg}}</li>
+                              <li >Pretul- {{car.pret}}</li>
+                              <li>Probeg- {{car.probeg}} km</li>
                               <li>Proprietar- {{car.prnume}}</li>
                          </ul>
                          <div class="phoneb">
@@ -54,15 +58,26 @@
                     </div>
                     <div class="col-md-3 pt-4">
                        <h2>Mai multe</h2>
-                       <h3>Pretul-total: {{car.pret}} {{orderSum}}$</h3>
-                       <label for="exampleFormControlSelect1">Culoarea</label>
-                         <select class="form-control" v-model="selectedColor">
-			             <option v-for="c in colorList">{{c.name}} [ {{c.price}} $]</option>
-		                 </select>
-		              <label for="exampleFormControlSelect1">Motor</label>
-                         <select class="form-control" v-model="selectedMotor">
-			             <option v-for="m in motorList">{{m.name}} [ {{m.price}} $]</option>
-		                 </select>
+                       <h3>Price-car: {{car.pret}} $</h3>
+                       <h3>Components: {{orderPrice}} $</h3>
+                       <h4>Total Price: {{orderPrice + car.pret}} $</h4>
+		<br>
+		<h4 >Color:</h4> 
+		<select class="form-control" @change="calcul(carColor)" v-model="selectedColor">
+			<option v-for="carColor in carColor" :value="carColor">{{carColor.name}} [+ {{carColor.price}} $]</option>
+		</select>
+		<span class="col"></span>
+		<br>
+		<h4 >Motor: </h4>
+		<select class="form-control" @change="calcul(carMotor)" v-model="selectedMotor">
+			<option v-for="carMotor in carMotor" :value="carMotor">{{carMotor.name}} [+ {{carMotor.price}} $]</option>
+		</select>
+		<br>
+		<h4 >carGlas:</h4>
+		<select class="form-control" @change="calcul(carGlas)" v-model="selectedGlas">
+			<option v-for="carGlas in carGlas" :value="carGlas">{{carGlas.name}} [+ {{carGlas.price}} $]</option>
+		</select>
+                   <button class="btn btn-danger btnt mt-3" @click="remove()">Remove</button>
 		               <button type="button" class="btn btn-primary mt-3" @click="modalv = true">
   Cumpara
 </button>
@@ -92,9 +107,11 @@
                          <ul>
                             <li>Model- {{car.model}}</li>
                               <li>Anul- {{car.an}}</li>
-                              <li>Pretul- {{car.pret}}</li>
-                              <li>Probeg- {{car.probeg}}</li>
-                              <li>Proprietar- {{car.prnume}}</li>
+                              <li>Probeg- {{car.probeg}} km</li>
+                              <li>Culoarea- {{selectedColor !== null ? selectedColor.name : "Nu ati ales"}}</li>
+                              <li>Motor: {{selectedMotor !== null ? selectedMotor.name : "Nu ati ales"}}</li>
+                              <li>Glass: {{selectedGlas !== null ? selectedGlas.name : "Nu ati ales"}}</li>
+                              <p style="color: royalblue; font-size: 25px; text-align: center;">Pretul total: {{orderPrice + car.pret}} $ </p>
                          </ul>
                 </div>
           </div>
@@ -114,8 +131,10 @@
              <ul class="list-group">
                    <li 
                    v-for="log in logs"
-                   class="list-group-item list-group-item-light">
-                   {{log.text}}
+                   class="list-group-item"
+                   :class="{'list-group-item-danger':log.type === 'can',
+                   'list-group-item-success':log.type === 'ok'}">
+                   {{log.text}} {{log.date | date }}
                   
                 </li>
              </ul>
